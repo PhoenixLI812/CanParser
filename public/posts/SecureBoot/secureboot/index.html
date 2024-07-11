@@ -4,10 +4,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     
-    <title>First post | LucidArea</title>
+    <title>Secure Boot | LucidArea</title>
     <meta name="viewport" content="width=device-width,minimum-scale=1">
-    <meta name="description" content="Introduction This is bold text, and this is emphasized text.
-Visit the Hugo website!">
+    <meta name="description" content="">
     <meta name="generator" content="Hugo 0.128.2">
     
     
@@ -32,30 +31,24 @@ Visit the Hugo website!">
     
 
     
-      <link rel="canonical" href="//localhost:1313/posts/my-first-post/">
+      <link rel="canonical" href="//localhost:1313/posts/secureboot/secureboot/">
     
 
-    <meta property="og:url" content="//localhost:1313/posts/my-first-post/">
+    <meta property="og:url" content="//localhost:1313/posts/secureboot/secureboot/">
   <meta property="og:site_name" content="LucidArea">
-  <meta property="og:title" content="First post">
-  <meta property="og:description" content="Introduction This is bold text, and this is emphasized text.
-Visit the Hugo website!">
+  <meta property="og:title" content="Secure Boot">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2024-07-05T16:33:51+08:00">
     <meta property="article:modified_time" content="2024-07-05T16:33:51+08:00">
 
-  <meta itemprop="name" content="First post">
-  <meta itemprop="description" content="Introduction This is bold text, and this is emphasized text.
-Visit the Hugo website!">
+  <meta itemprop="name" content="Secure Boot">
   <meta itemprop="datePublished" content="2024-07-05T16:33:51+08:00">
   <meta itemprop="dateModified" content="2024-07-05T16:33:51+08:00">
-  <meta itemprop="wordCount" content="14">
+  <meta itemprop="wordCount" content="21">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="First post">
-  <meta name="twitter:description" content="Introduction This is bold text, and this is emphasized text.
-Visit the Hugo website!">
+  <meta name="twitter:title" content="Secure Boot">
 
 	
   </head>
@@ -118,7 +111,7 @@ Visit the Hugo website!">
   </div>
 
 
-      <h1 class="f1 athelas mt3 mb1">First post</h1>
+      <h1 class="f1 athelas mt3 mb1">Secure Boot</h1>
       
       
       
@@ -128,10 +121,33 @@ Visit the Hugo website!">
       
       
     </header>
-    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h2 id="introduction">Introduction</h2>
-<p>This is <strong>bold</strong> text, and this is <em>emphasized</em> text.</p>
-<p>Visit the <a href="https://gohugo.io">Hugo</a> website!</p>
-<ul class="pa0">
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="secureboot测试流程">SecureBoot测试流程:</h1>
+<h3 id="1刷写factoryhex">1.刷写FactoryHex</h3>
+<p>使用Jflash 刷写SW5225_Debug_FactoryImageWithPubKey_Signed.hex
+<img src="/factoryhex.png" alt="">
+刷写完成后运行TransToSecure.BAT脚本
+<img src="/image-6.png" alt="">
+<img src="/image-7.png" alt="">
+执行完成后运行ReadLifeState.bat脚本
+<img src="/image-8.png" alt="">
+<img src="/image-10.png" alt="">
+读取结果应该是33，这里23是因为测试板子已经进入了DEBUG状态</p>
+<h3 id="2刷写成功后使用上位机刷写updatehex">2.刷写成功后，使用上位机刷写UPDATEHEX</h3>
+<p><img src="/image-1.png" alt="">
+<img src="/image-3.png" alt="">
+刷写成功</p>
+<!-- raw HTML omitted -->
+<h3 id="3-修改灯的频率编译后修改updatehex文件签名再次进行刷写">3. 修改灯的频率，编译后修改UpdateHex文件签名，再次进行刷写</h3>
+<p><img src="/image-4.png" alt="">
+将位于Hex文件末尾的签名中最后一个byte进行修改，图片中由CB改为CC
+再次用上位机进行刷写。
+<img src="/image-5.png" alt="">
+刷写成功后，观察MCU的LED灯的频率，并没有发生变化。
+原因是程序虽然通过了SecureFlash的签名验证，并且完成了刷写流程，但是复位后SecureBoot的签名验证未通过，SecureBoot认为新刷写的程序是未经授权的，所以继续执行刷写之前得程序，这样就保证了只有经过授权得程序才能由boot启动。</p>
+<h3 id="4-将步骤3所用hex文件最后得签名改回去再次进行刷写">4. 将步骤3所用hex文件最后得签名改回去，再次进行刷写</h3>
+<p>刷写成功后，观察MCU得LED灯得频率，发现已经改变，说明程序更新成功。</p>
+<h3 id="secure-boot-diagram">Secure Boot Diagram</h3>
+<p><img src="/SecureBoot.png" alt=""></p><ul class="pa0">
   
 </ul>
 <div class="mt6 instapaper_ignoref">
