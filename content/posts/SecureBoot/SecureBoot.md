@@ -38,8 +38,6 @@ draft = false
 ![](../../../images/SecureBoot.png)
 
 
-{{< myshortcode >}}
-
 
 
 
